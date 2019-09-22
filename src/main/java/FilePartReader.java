@@ -10,8 +10,8 @@ public class FilePartReader {
     private int toLine;
 
 
-    public void setup (String filePath, int fromLine, int toLine){
-        if(toLine < fromLine || fromLine < 1)
+    public void setup(String filePath, int fromLine, int toLine) {
+        if (toLine < fromLine || fromLine < 1)
             throw new IllegalArgumentException("toLine cannot be smaller than fromLine");
         this.filePath = filePath;
         this.fromLine = fromLine;
@@ -25,22 +25,22 @@ public class FilePartReader {
         // if the file isn't present on filePath, we can expect an IOException
         ////problem witch catching IOException catch says that try block does not throw IOException
         StringBuilder text = new StringBuilder();
-        try{
+        try {
             Scanner scanner = new Scanner(new File(filePath)); //here throws FileNotFoundException
             scanner.useDelimiter(" ");
-            while(scanner.hasNextLine()){
+            while (scanner.hasNextLine()) {
                 text.append(scanner.nextLine()).append("\n");//should throw IOException here when file isn't present
             }
             scanner.close();
             return text.toString();
-        }catch(FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             throw new FileNotFoundException("File read Failed");
         }
     }
 
 
-    public String readLines () throws FileNotFoundException {
+    public String readLines() throws FileNotFoundException {
         StringBuilder lines = new StringBuilder();
 
         String text = read();
@@ -53,7 +53,7 @@ public class FilePartReader {
         for (int i = fromLine - 1; i < validToLine; i++) {
             lines.append(textArr[i]);
             //does not append \n to last line
-            if(i != validToLine - 1) lines.append("\n");
+            if (i != validToLine - 1) lines.append("\n");
         }
         return lines.toString();
     }
