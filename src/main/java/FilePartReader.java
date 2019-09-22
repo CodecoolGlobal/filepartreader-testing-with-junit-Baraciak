@@ -1,5 +1,7 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
 import java.util.Scanner;
 
 public class FilePartReader {
@@ -16,56 +18,43 @@ public class FilePartReader {
         this.toLine = toLine;
     }
 
-    /*opens the file on filePath , and gives back it's content as a String
-      it doesn't catch the exception being raised,
-      the file isn't present on filePath, we can expect an IOException
-     */
-    public String read () {
+
+    public String read() throws FileNotFoundException {
         //opens the file on filePath , and gives back it's content as a String
         //it doesn't catch the exception being raised,
         // if the file isn't present on filePath, we can expect an IOException
+        ////problem witch catching IOException catch says that try block does not throw IOException
         StringBuilder text = new StringBuilder();
         try{
-            Scanner scanner = new Scanner(new File(filePath));
+            Scanner scanner = new Scanner(new File(filePath)); //here throws FileNotFoundException
             scanner.useDelimiter(" ");
             while(scanner.hasNextLine()){
-                text.append(scanner.nextLine()).append("\n");
+                text.append(scanner.nextLine()).append("\n");//should throw IOException here when file isn't present
             }
+            scanner.close();
             return text.toString();
-        }catch (IOException e){
+        }catch(FileNotFoundException e){
             e.printStackTrace();
+            throw new FileNotFoundException("File read Failed");
         }
-        return null;
     }
 
-    public String readLines (){
+
+    public String readLines () throws FileNotFoundException {
         StringBuilder lines = new StringBuilder();
 
         String text = read();
         String[] textArr = text.split("\n");
-        for (int i = fromLine - 1; i < toLine; i++) {
-            lines.append(textArr[i]).append("\n");
-        }
 
+        //chooses when to end iterating
+        //                                          true           :  false
+        int validToLine = toLine > textArr.length ? textArr.length : toLine;
+
+        for (int i = fromLine - 1; i < validToLine; i++) {
+            lines.append(textArr[i]);
+            //does not append \n to last line
+            if(i != validToLine - 1) lines.append("\n");
+        }
         return lines.toString();
     }
-    //reads the file with read ()
-    //it gives back every line from it's content between fromLine and toLine (both of them are included), and returns these lines as a String. Take care because if fromLine is 1, it means the very first row in the file.
-    // Also, if fromLine is 1 and toLine is 1 also, we will read only the very first line.
 }
-//public void setup ()
-    //it's parameters are:
-    //filePath as a String
-    //fromLine as an Integer
-    //toLine as an Integer
-    //it throws an IllegalArgumentException :
-    //if toLine is smaller than fromLine
-    //if fromLine is smaller than 1
-//public String read ()
-    //opens the file on filePath , and gives back it's content as a String
-    //it doesn't catch the exception being raised,
-    // if the file isn't present on filePath, we can expect an IOException
-//public String readLines ():
-    //reads the file with read ()
-    //it gives back every line from it's content between fromLine and toLine (both of them are included), and returns these lines as a String. Take care because if fromLine is 1, it means the very first row in the file.
-    // Also, if fromLine is 1 and toLine is 1 also, we will read only the very first line.
